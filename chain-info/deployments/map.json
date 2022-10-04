@@ -1,0 +1,63 @@
+{
+  "97": {
+    "LabradoOperator": [
+      "0x7b4d41f4e7305dc43a22cb68dd556e9432563ad9"
+    ],
+    "LabradoToken": [
+      "0xEf092d7A3ee0cf6a90fbf5cC10981C3e03079D27"
+    ],
+    "USDC": [
+      "0xe09dd26d773b83cdb910aa44f8144d30e47beddd"
+    ],
+    "LabradoAmulet": [
+      "0xd2e1399841bfdab27f9528f8877b0fcdb607babc"
+    ],
+    "LabradoAmuletCrystal": [
+      "0x2c76e00bb78b7fe74abc9b8e0cba8589b97089a3"
+    ],
+    "LabradoWeapon": [
+      "0x317166e0b7b390ab319f3182830caa67faad16d5"
+    ],
+    "LabradoWeaponCrystal": [
+      "0x16700abe7c833cb73c64aeabd43b8532261072e3"
+    ],
+    "LabradoGem": [
+      "0xacb86041545f524b792df042432b2fcd74b3e2b9"
+    ],
+    "LabradoFactory": [
+      "0x0a61cc85e26014638dfba4900d3cce962cd6e85f"
+    ],
+    "LabradoRouter02": [
+      "0x5fd078ad60c4dfbc843aacb8d83e8ca16da7ba14"
+    ],
+    "WETH": [
+      "0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd"
+    ]
+  },
+  "31337": {
+    "USDC": [
+      "0x0165878a594ca255338adfa4d48449f69242eb8f"
+    ],
+    "LabradoToken": [
+      "0x5fc8d32690cc91d4c39d9d3abcbd16989f875707"
+    ],
+    "LabradoAmulet": [
+      "0xa513e6e4b8f2a923d98304ec87f64353c4d5c853"
+    ],
+    "LabradoWeapon": [
+      "0x2279b7a0a67db372996a5fab50d91eaa73d2ebe6"
+    ],
+    "LabradoOperator": [
+      "0x8a791620dd6260079bf849dc5567adc3f2fdc318"
+    ],
+    "LabradoFactory": [
+      "0x0b306bf915c4d645ff596e518faf3f9669b97016"
+    ],
+    "LabradoRouter02": [
+      "0x9a9f2ccfde556a7e9ff0848998aa4a0cfd8863ae"
+    ],
+    "WETH": [
+      "0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd"
+    ]
+  }
+}
