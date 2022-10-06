@@ -70,3 +70,15 @@ npx hardhat run --network bsctestnet scripts/03_deployNFTs.js
 - `<name-network>` is `bsctestnet` can select `networks` in [`hardhat.config.js`](./hardhat.config.js#L59)
 
 - `<file-script>` is `01_deployLabradoToken.js`, `02_deployTestUSDC.js`, `03_deployNFTs.js`
+
+
+## II. Roles and functions change
+
+| Smart contract 	| Role now 	| Function Change Owner 	|
+|---	|---	|---	|
+| <br>LabradoToken 	| <br>- Admin(mint/change Owner): Deployer 	| <br>- renounceOwnership: change to address zero<br> <br>- transferOwnership: change to address other<br> 	|
+| <br>Excalibur 	| <br>- Admin(mint/change Owner): Deployer<br> 	| <br>- renounceOwnership: change to address zero<br> <br>- transferOwnership: change to address other<br> 	|
+| <br>NFTs(Amulet, Weapon, Gem,..) 	| <br>- Admin(grant_role, revoke_role, setBaseURI): Deployer<br><br>- Minter(mint, mintBatch): Deployer 	| <br>- grantRole <br><br>- revokeRole<br><br>- renounceRole<br> 	|
+| <br>LabradoOperator 	| <br>- Admin(grant_role, revoke_roke and all function setting): Deployer 	| <br>- grantRole <br><br>- revokeRole <br><br>- renounceRole<br> 	|
+| <br>LabradoFactory 	| <br>- Admin(set_new_admin, create_pair, set_fee_to, set_fee_swap_pair, <br>set router, set public swap or add liquidity,...): Deployer<br> 	| <br>- setNewAdmin<br> 	|
+| <br>LabradoRouter02 	| <br>- Admin(set_new_signer, set_new_admin, set_opent_public_swap, <br>add_liquidity, get_user_none,...)<br><br> 	| <br>- setNewAdmin<br> 	|
