@@ -13,8 +13,8 @@ async function main() {
   const factory = await Factory.deploy(deployer.address);
   await factory.deployed();
 
-  await copyArtifactsToChainInfo();
-  await setAddressToMapJson(chainId, "LabradoFactory", factory.address);
+  copyArtifactsToChainInfo();
+  setAddressToMapJson(chainId, "LabradoFactory", factory.address);
   console.log("\nLabradoFactory", factory.address);
 }
 

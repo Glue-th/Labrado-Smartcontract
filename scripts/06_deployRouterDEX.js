@@ -17,8 +17,8 @@ async function main() {
   const router = await LabradoRouter02.deploy(factory, WBNB[chainId]);
   await router.deployed();
 
-  await copyArtifactsToChainInfo();
-  await setAddressToMapJson(chainId, "LabradoRouter02", router.address);
+  copyArtifactsToChainInfo();
+  setAddressToMapJson(chainId, "LabradoRouter02", router.address);
 
   console.log("\nLabradoRouter02: ", router.address);
 }

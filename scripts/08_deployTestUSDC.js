@@ -8,8 +8,8 @@ async function main() {
   const USDC = await hre.ethers.getContractFactory("TestERC20");
   const usdc = await USDC.deploy("USDC", "USDC");
   await usdc.deployed();
-  await copyArtifactsToChainInfo();
-  await setAddressToMapJson(chainId, "USDC", usdc.address);
+  copyArtifactsToChainInfo();
+  setAddressToMapJson(chainId, "USDC", usdc.address);
   console.log("\nUSDC:", usdc.address);
 }
 

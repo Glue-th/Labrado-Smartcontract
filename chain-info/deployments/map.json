@@ -1,13 +1,16 @@
 {
   "97": {
-    "LabradoOperator": [
-      "0x7b4d41f4e7305dc43a22cb68dd556e9432563ad9"
-    ],
     "LabradoToken": [
       "0xEf092d7A3ee0cf6a90fbf5cC10981C3e03079D27"
     ],
+    "ExcaliburToken": [
+      "0xa055005216e16dd604148b0c38744db1b1a44b3b"
+    ],
     "USDC": [
       "0xe09dd26d773b83cdb910aa44f8144d30e47beddd"
+    ],
+    "LabradoOperator": [
+      "0x54e154d115fe226cdcc025cd02d37e2700a2a835"
     ],
     "LabradoAmulet": [
       "0xd2e1399841bfdab27f9528f8877b0fcdb607babc"

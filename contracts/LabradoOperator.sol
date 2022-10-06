@@ -4,20 +4,21 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/access/AccessControlEnumerable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Enumerable.sol";
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/security/Pausable.sol";
 
 /**
  * @title Labrado Operator contract
  * @dev Operator contract use for deposit token token or nft (ERC20/Native/ERC721 token)
  * @author Labrado
  */
-contract LabradoOperator is AccessControlEnumerable, ReentrancyGuard {
+contract LabradoOperator is AccessControlEnumerable, Pausable {
     using SafeERC20 for IERC20;
 
     mapping(address => bool) public supportTokens; // (address token => status true/false)
     mapping(address => bool) public supportNfts; // (address nft => status true/false)
 
-    address private operatorWallet;
+    address private operatorWalletTokens;
+    address private operatorWalletNFTs;
 
     event DepositToken(
         address depositContract,
@@ -30,13 +31,18 @@ contract LabradoOperator is AccessControlEnumerable, ReentrancyGuard {
         uint256 tokenId
     );
 
-    constructor(address _operatorWallet) {
+    constructor(address _operatorWalletTokens, address _operatorWalletNFTs) {
         require(
-            _operatorWallet != address(0),
-            "LabradoOperator: _operatorWallet must different zero-address"
+            _operatorWalletTokens != address(0),
+            "LabradoOperator: _operatorWalletTokens must different zero-address"
+        );
+        require(
+            _operatorWalletNFTs != address(0),
+            "LabradoOperator: _operatorWalletNFTs must different zero-address"
         );
         _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
-        operatorWallet = _operatorWallet;
+        operatorWalletTokens = _operatorWalletTokens;
+        operatorWalletNFTs = _operatorWalletNFTs;
     }
 
     /*******************
@@ -72,22 +78,65 @@ contract LabradoOperator is AccessControlEnumerable, ReentrancyGuard {
     }
 
     /**
-     * @dev Set new operatorWallet for contract
+     * @dev Set new operatorWalletTokens for contract
      * - Can only be called by user has role admin
-     * @param _operatorWallet Address new operatorWallet
+     * @param _operatorWalletTokens Address new operatorWalletTokens
      **/
-    function setOperatorWallet(address _operatorWallet) external {
+    function setOperatorWalletTokens(address _operatorWalletTokens) external {
         require(
             hasRole(DEFAULT_ADMIN_ROLE, _msgSender()),
             "LabradoOperator: caller is not admin"
         );
 
         require(
-            _operatorWallet != address(0),
-            "LabradoOperator: _operatorWallet must different zero-address"
+            _operatorWalletTokens != address(0),
+            "LabradoOperator: _operatorWalletTokens must different zero-address"
         );
 
-        operatorWallet = _operatorWallet;
+        operatorWalletTokens = _operatorWalletTokens;
+    }
+
+    /**
+     * @dev Set new operatorWalletNFTs for contract
+     * - Can only be called by user has role admin
+     * @param _operatorWalletNFTs Address new operatorWalletNFTs
+     **/
+    function setOperatorWalletNFTs(address _operatorWalletNFTs) external {
+        require(
+            hasRole(DEFAULT_ADMIN_ROLE, _msgSender()),
+            "LabradoOperator: caller is not admin"
+        );
+
+        require(
+            _operatorWalletNFTs != address(0),
+            "LabradoOperator: _operatorWalletNFTs must different zero-address"
+        );
+
+        operatorWalletNFTs = _operatorWalletNFTs;
+    }
+
+    /**
+     * @dev Set pause for contract
+     * - Can only be called by user has role admin
+     **/
+    function pause() public virtual {
+        require(
+            hasRole(DEFAULT_ADMIN_ROLE, _msgSender()),
+            "LabradoOperator: caller is not admin"
+        );
+        _pause();
+    }
+
+    /**
+     * @dev Set unpause for contract
+     * - Can only be called by user has role admin
+     **/
+    function unpause() public virtual {
+        require(
+            hasRole(DEFAULT_ADMIN_ROLE, _msgSender()),
+            "LabradoOperator: caller is not admin"
+        );
+        _unpause();
     }
 
     /**************************
@@ -100,14 +149,18 @@ contract LabradoOperator is AccessControlEnumerable, ReentrancyGuard {
      * @param _token Address token will deposit
      * @param _amount Is amount token will deposit
      **/
-    function depositToken(address _token, uint256 _amount) public payable {
+    function depositToken(address _token, uint256 _amount)
+        public
+        payable
+        whenNotPaused
+    {
         require(supportTokens[_token], "LabradoOperator: token is not support");
         if (_token == address(0)) {
             require(
                 msg.value >= _amount,
                 "LabradoOperator: msg.value must equal amount"
             );
-            payable(operatorWallet).transfer(_amount);
+            payable(operatorWalletTokens).transfer(_amount);
         } else {
             require(
                 IERC20(_token).balanceOf(_msgSender()) >= _amount,
@@ -115,7 +168,7 @@ contract LabradoOperator is AccessControlEnumerable, ReentrancyGuard {
             );
             IERC20(_token).safeTransferFrom(
                 _msgSender(),
-                operatorWallet,
+                operatorWalletTokens,
                 _amount
             );
         }
@@ -131,7 +184,6 @@ contract LabradoOperator is AccessControlEnumerable, ReentrancyGuard {
     function withdrawTokensStuck(address _token, uint256 _amount)
         public
         payable
-        nonReentrant
     {
         require(
             hasRole(DEFAULT_ADMIN_ROLE, _msgSender()),
@@ -150,11 +202,7 @@ contract LabradoOperator is AccessControlEnumerable, ReentrancyGuard {
      * - Can only be called by user has role DEFAULT_ADMIN_ROLE
      * @param _token Address token will withdraw
      **/
-    function withdrawAllTokensStuck(address _token)
-        public
-        payable
-        nonReentrant
-    {
+    function withdrawAllTokensStuck(address _token) public payable {
         require(
             hasRole(DEFAULT_ADMIN_ROLE, _msgSender()),
             "LabradoOperator: caller is not admin"
@@ -180,14 +228,18 @@ contract LabradoOperator is AccessControlEnumerable, ReentrancyGuard {
      * @param _nft Address nft will deposit
      * @param _tokenId Is token id of nft
      **/
-    function depositNFT(address _nft, uint256 _tokenId) public {
+    function depositNFT(address _nft, uint256 _tokenId) public whenNotPaused {
         require(supportNfts[_nft], "LabradoOperator: nft not support");
         require(
             IERC721(_nft).ownerOf(_tokenId) == _msgSender(),
             "LabradoOperator: sender is not owner tokenId"
         );
 
-        IERC721(_nft).safeTransferFrom(_msgSender(), operatorWallet, _tokenId);
+        IERC721(_nft).safeTransferFrom(
+            _msgSender(),
+            operatorWalletNFTs,
+            _tokenId
+        );
 
         emit DepositNFT(_nft, _msgSender(), _tokenId);
     }
@@ -196,9 +248,27 @@ contract LabradoOperator is AccessControlEnumerable, ReentrancyGuard {
      * View functions
      ****************/
 
-    // @dev Check if the address is operatorWallet
-    // @param _operatorWallet Is address need check
-    function isOperator(address _operatorWallet) public view returns (bool) {
-        return operatorWallet == _operatorWallet ? true : false;
+    // @dev Check if the address is operatorWalletTokens
+    // @param _address Is address need check
+    function isOperatorWalletTokens(address _address)
+        public
+        view
+        returns (bool)
+    {
+        require(
+            hasRole(DEFAULT_ADMIN_ROLE, _msgSender()),
+            "LabradoOperator: caller is not admin"
+        );
+        return operatorWalletTokens == _address ? true : false;
+    }
+
+    // @dev Check if the address is operatorWalletNFTs
+    // @param _address Is address need check
+    function isOperatorWalletNFTs(address _address) public view returns (bool) {
+        require(
+            hasRole(DEFAULT_ADMIN_ROLE, _msgSender()),
+            "LabradoOperator: caller is not admin"
+        );
+        return operatorWalletNFTs == _address ? true : false;
     }
 }

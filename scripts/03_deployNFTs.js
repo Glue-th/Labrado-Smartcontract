@@ -47,10 +47,10 @@ async function main() {
     const nft = await NFT.deploy(info[0], info[1], info[2]);
     await nft.deployed();
 
-    await setAddressToMapJson(chainId, info[3], nft.address);
+    setAddressToMapJson(chainId, info[3], nft.address);
     console.log(`\n${info[3]}: `, info[0], info[1], nft.address);
   }
-  await copyArtifactsToChainInfo();
+  copyArtifactsToChainInfo();
 }
 
 main().catch((error) => {
