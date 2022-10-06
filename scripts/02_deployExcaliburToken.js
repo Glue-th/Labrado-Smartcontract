@@ -7,14 +7,14 @@ const { setAddressToMapJson } = require("../utils/readWriteFileMapJson");
 async function main() {
   const chainId = hre.network.config.chainId;
 
-  const Labrado = await hre.ethers.getContractFactory("LabradoToken");
-  const labrado = await Labrado.deploy();
-  await labrado.deployed();
+  const Excalibur = await hre.ethers.getContractFactory("Excalibur");
+  const excalibur = await Excalibur.deploy();
+  await excalibur.deployed();
 
   copyArtifactsToChainInfo();
-  setAddressToMapJson(chainId, "LabradoToken", labrado.address);
+  setAddressToMapJson(chainId, "ExcaliburToken", excalibur.address);
 
-  console.log("\nLabrado Token:", labrado.address);
+  console.log("\nLabrado Token:", excalibur.address);
 }
 
 main().catch((error) => {
