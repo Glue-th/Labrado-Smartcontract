@@ -18,7 +18,8 @@ library LabradoLiquidityMathLibrary {
         uint256 truePriceTokenA,
         uint256 truePriceTokenB,
         uint256 reserveA,
-        uint256 reserveB
+        uint256 reserveB,
+        uint256 feeSwap
     ) internal pure returns (bool aToB, uint256 amountIn) {
         aToB =
             FullMath.mulDiv(reserveA, truePriceTokenB, reserveB) <
@@ -30,11 +31,12 @@ library LabradoLiquidityMathLibrary {
             FullMath.mulDiv(
                 invariant.mul(1000),
                 aToB ? truePriceTokenA : truePriceTokenB,
-                (aToB ? truePriceTokenB : truePriceTokenA).mul(997)
+                (aToB ? truePriceTokenB : truePriceTokenA).mul(1000 - feeSwap)
             )
         );
         uint256 rightSide = (aToB ? reserveA.mul(1000) : reserveB.mul(1000)) /
-            997;
+            1000 -
+            feeSwap;
 
         if (leftSide < rightSide) return (false, 0);
 
@@ -62,12 +64,17 @@ library LabradoLiquidityMathLibrary {
             "UniswapV2ArbitrageLibrary: ZERO_PAIR_RESERVES"
         );
 
+        uint256 feePair = ILabradoPair(
+            LabradoLibrary.pairFor(factory, tokenA, tokenB)
+        ).feeSwap();
+
         // then compute how much to swap to arb to the true price
         (bool aToB, uint256 amountIn) = computeProfitMaximizingTrade(
             truePriceTokenA,
             truePriceTokenB,
             reserveA,
-            reserveB
+            reserveB,
+            feePair
         );
 
         if (amountIn == 0) {
@@ -75,9 +82,6 @@ library LabradoLiquidityMathLibrary {
         }
 
         // now affect the trade to the reserves
-        uint256 feePair = ILabradoPair(
-            LabradoLibrary.pairFor(factory, tokenA, tokenB)
-        ).feeSwap();
         if (aToB) {
             uint256 amountOut = LabradoLibrary.getAmountOut(
                 amountIn,
