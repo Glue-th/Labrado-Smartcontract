@@ -40,8 +40,17 @@ contract LabradoToken is ERC20, ERC20Burnable, Ownable {
         );
         uint256 total = 0;
         for (uint256 i = 0; i < _recipients.length; i++) total += _amounts[i];
-        require(this.transferFrom(msg.sender, address(this), total));
+        require(
+            this.transferFrom(
+                msg.sender,
+                address(this),
+                "LBRD: transfer from sender to contract failed"
+            )
+        );
         for (uint256 i = 0; i < _recipients.length; i++)
-            require(this.transfer(_recipients[i], _amounts[i]));
+            require(
+                this.transfer(_recipients[i], _amounts[i]),
+                "LBRD: transfer from contract to recipient failed"
+            );
     }
 }

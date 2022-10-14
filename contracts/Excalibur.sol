@@ -12,7 +12,6 @@ import "@openzeppelin/contracts/access/Ownable.sol";
  * @author Labrado
  */
 contract Excalibur is ERC20, ERC20Burnable, Ownable {
-    
     uint256 public constant MAX_SUPPLY = 10 * 10**(9 + 18); // 10 billion tokens
 
     constructor() ERC20("EXCALIBUR", "EXCA") {}
@@ -24,7 +23,10 @@ contract Excalibur is ERC20, ERC20Burnable, Ownable {
      * @param _amount Token create new
      **/
     function mint(address _to, uint256 _amount) public onlyOwner {
-        require(totalSupply() + _amount <= MAX_SUPPLY, "EXCA: Max supply exceeded");
+        require(
+            totalSupply() + _amount <= MAX_SUPPLY,
+            "EXCA: Max supply exceeded"
+        );
         _mint(_to, _amount);
     }
 
@@ -44,8 +46,17 @@ contract Excalibur is ERC20, ERC20Burnable, Ownable {
         );
         uint256 total = 0;
         for (uint256 i = 0; i < _recipients.length; i++) total += _amounts[i];
-        require(this.transferFrom(msg.sender, address(this), total));
+        require(
+            this.transferFrom(
+                msg.sender,
+                address(this),
+                "EXCA: transfer from sender to contract failed"
+            )
+        );
         for (uint256 i = 0; i < _recipients.length; i++)
-            require(this.transfer(_recipients[i], _amounts[i]));
+            require(
+                this.transfer(_recipients[i], _amounts[i]),
+                "EXCA: transfer from contract to recipient failed"
+            );
     }
 }
