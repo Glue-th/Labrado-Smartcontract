@@ -2,6 +2,8 @@
 pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Pausable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
 /**
@@ -9,7 +11,12 @@ import "@openzeppelin/contracts/utils/Counters.sol";
  * @dev This contract is a base for Labrado nfts types
  * @author Labrado
  **/
-contract LabradoBaseNFT is AccessControl, ERC721Enumerable {
+contract LabradoBaseNFT is
+    AccessControl,
+    ERC721Enumerable,
+    ERC721Burnable,
+    ERC721Pausable
+{
     using Counters for Counters.Counter;
 
     struct TokenIdAndURI {
@@ -30,6 +37,30 @@ contract LabradoBaseNFT is AccessControl, ERC721Enumerable {
         baseUri = _baseUri;
         _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
         _setupRole(MINTER_ROLE, _msgSender());
+    }
+
+    /**
+     * @dev Set pause for contract
+     * - Can only be called by user has role admin
+     **/
+    function pause() public virtual {
+        require(
+            hasRole(DEFAULT_ADMIN_ROLE, _msgSender()),
+            string(abi.encodePacked(symbol(), ": caller is not admin"))
+        );
+        _pause();
+    }
+
+    /**
+     * @dev Set unpause for contract
+     * - Can only be called by user has role admin
+     **/
+    function unpause() public virtual {
+        require(
+            hasRole(DEFAULT_ADMIN_ROLE, _msgSender()),
+            string(abi.encodePacked(symbol(), ": caller is not admin"))
+        );
+        _unpause();
     }
 
     /**
@@ -89,15 +120,6 @@ contract LabradoBaseNFT is AccessControl, ERC721Enumerable {
     }
 
     /**
-     * @dev Burn nft have tokenId specified
-     * - Can called by everyone external contract
-     * @param _tokenId Is tokenId of nft and sender must owner of this nft
-     **/
-    function burn(uint256 _tokenId) external {
-        _burn(_tokenId);
-    }
-
-    /**
      * @dev Return baseUri of this contract
      * - This function is internal so it cannot be called from outside the contract
      **/
@@ -122,7 +144,7 @@ contract LabradoBaseNFT is AccessControl, ERC721Enumerable {
         }
         return tokens;
     }
-    
+
     /**
      * @dev Return information NFTs of address _owner
      * - This function is public and view so anyone can call
@@ -143,10 +165,18 @@ contract LabradoBaseNFT is AccessControl, ERC721Enumerable {
         return tokenIdsAndURIs;
     }
 
+    function _beforeTokenTransfer(
+        address from,
+        address to,
+        uint256 tokenId
+    ) internal override(ERC721, ERC721Enumerable, ERC721Pausable) {
+        super._beforeTokenTransfer(from, to, tokenId);
+    }
+
     function supportsInterface(bytes4 interfaceId)
         public
         view
-        override(AccessControl, ERC721Enumerable)
+        override(AccessControl, ERC721Enumerable, ERC721)
         returns (bool)
     {
         return super.supportsInterface(interfaceId);
