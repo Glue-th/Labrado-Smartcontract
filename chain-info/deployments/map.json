@@ -6,9 +6,6 @@
     "ExcaliburToken": [
       "0xa055005216e16dd604148b0c38744db1b1a44b3b"
     ],
-    "USDC": [
-      "0xe09dd26d773b83cdb910aa44f8144d30e47beddd"
-    ],
     "LabradoOperator": [
       "0x54e154d115fe226cdcc025cd02d37e2700a2a835"
     ],
@@ -38,9 +35,6 @@
     ]
   },
   "31337": {
-    "USDC": [
-      "0x0165878a594ca255338adfa4d48449f69242eb8f"
-    ],
     "LabradoToken": [
       "0x5fc8d32690cc91d4c39d9d3abcbd16989f875707"
     ],

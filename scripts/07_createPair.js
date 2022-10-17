@@ -9,7 +9,6 @@ async function main() {
   const chainId = hre.network.config.chainId;
   let addressFactory = getAddressFromMapJson(chainId, "LabradoFactory");
   let addressWBNB = WBNB[chainId];
-  let addressUSDC = getAddressFromMapJson(chainId, "USDC");
   let addressLabradoToken = getAddressFromMapJson(chainId, "LabradoToken");
   const LabradoFactory = await ethers.getContractFactory(
     "LabradoFactory",
@@ -25,16 +24,6 @@ async function main() {
     );
     await txCreatePair.wait(1);
     console.log("\nCreate Pair LBRD/BNB Done: ", txCreatePair.hash);
-  }
-
-  let pairLBRD_USDC = await factory.getPair(addressLabradoToken, addressUSDC);
-  if (pairLBRD_USDC === "0x0000000000000000000000000000000000000000") {
-    let txCreatePair = await factory.createPair(
-      addressLabradoToken,
-      addressUSDC
-    );
-    await txCreatePair.wait(1);
-    console.log("\nCreate Pair LBRD/USDC Done: ", txCreatePair.hash);
   }
 }
 

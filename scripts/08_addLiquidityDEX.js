@@ -8,7 +8,6 @@ async function main() {
   [deployer] = await ethers.getSigners();
   const chainId = hre.network.config.chainId;
   let addressRouter = getAddressFromMapJson(chainId, "LabradoRouter02");
-  let addressUSDC = getAddressFromMapJson(chainId, "USDC");
   let addressLabradoToken = getAddressFromMapJson(chainId, "LabradoToken");
   let addressWBNB = WBNB[chainId];
 
@@ -31,55 +30,11 @@ async function main() {
   );
   const labradoToken = await LabradoToken.attach(addressLabradoToken);
 
-  const USDC = await ethers.getContractFactory("TestERC20", deployer);
-  const usdc = await USDC.attach(addressUSDC);
-
-  let txApproveUSDC = await usdc.approve(
-    addressRouter,
-    "0xffffffffffffffffffffffffffffffffffffffff"
-  );
-  await txApproveUSDC.wait(1);
-
   let txApproveLBRD = await labradoToken.approve(
     addressRouter,
     "0xffffffffffffffffffffffffffffffffffffffff"
   );
   await txApproveLBRD.wait(1);
-
-  let addressPairLBRD_USDC = await factory.getPair(
-    addressLabradoToken,
-    addressUSDC
-  );
-  const pairLBRD_USDC = await ethers.getContractFactory(
-    "LabradoPair",
-    deployer
-  );
-  const instancePairLBRD_USDC = await pairLBRD_USDC.attach(
-    addressPairLBRD_USDC
-  );
-  let isRouterLBRD_USDC = await instancePairLBRD_USDC.isRouter(addressRouter);
-  if (!isRouterLBRD_USDC) {
-    let txSetRouterLBRD_USDC = await factory.setMultiSetRoutersPair(
-      addressLabradoToken,
-      addressUSDC,
-      [addressRouter],
-      [true]
-    );
-    await txSetRouterLBRD_USDC.wait(1);
-    console.log("\nSet Router LBRD/USDC Done: ", txSetRouterLBRD_USDC.hash);
-  }
-  let txAddLiquidLBRD_USDC = await router.addLiquidity(
-    addressUSDC,
-    addressLabradoToken,
-    "1000000000000000000000000",
-    "1000000000000000000000000",
-    "1000000000000000000000000",
-    "1000000000000000000000000",
-    deployer.address,
-    1111111111111
-  );
-  await txAddLiquidLBRD_USDC.wait(1);
-  console.log("\nAdd Liquidity LBRD/USDC Done: ", txAddLiquidLBRD_USDC.hash);
 
   let addressPairLBRD_BNB = await factory.getPair(
     addressLabradoToken,
