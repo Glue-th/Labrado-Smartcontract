@@ -39,6 +39,9 @@ exports.setAddressToMapJson = (chainId, nameContract, newAddress) => {
     }
     let rawdata = fs.readFileSync(pathToMap);
     let listAddresses = JSON.parse(rawdata);
+    if (!listAddresses[chainId]) {
+      listAddresses[chainId] = {};
+    }
     listAddresses[chainId][nameContract] = [newAddress];
     let data = JSON.stringify(listAddresses, null, 2);
     fs.writeFileSync(pathToMap, data);

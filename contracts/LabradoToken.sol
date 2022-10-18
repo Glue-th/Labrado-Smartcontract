@@ -10,7 +10,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
  * @title Labrado ERC20 Token
  * @dev This is Utility Token of Labrado
  * @author Labrado
- */
+ **/
 contract LabradoToken is ERC20, ERC20Burnable, Ownable {
     constructor() ERC20("LABRADO", "LBRD") {}
 
