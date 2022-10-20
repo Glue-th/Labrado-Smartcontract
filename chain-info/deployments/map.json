@@ -1,4 +1,33 @@
 {
+  "56": {
+    "LabradoToken": [
+      "0x84d8df3098243f5b30ebedbb9f982f4095f1a426"
+    ],
+    "LabradoAmulet": [
+      "0x554a619b423b424bf0b16e9ccda0fd36923f354d"
+    ],
+    "LabradoAmuletCrystal": [
+      "0x2bfe62d96f81d34535862dc1c4052b3a6be542f2"
+    ],
+    "LabradoWeapon": [
+      "0x3a1c49243b3606e853a228278543d4058a129835"
+    ],
+    "LabradoWeaponCrystal": [
+      "0x9b2adfc7875c28a07ab4694ee02ad5bf59e18de5"
+    ],
+    "LabradoGem": [
+      "0x062bc5c93bc74809421404b18e5c03c56aa75e15"
+    ],
+    "LabradoOperator": [
+      "0x325ff031b1f2ad11e37dd697722e06c8fe3fda3f"
+    ],
+    "LabradoFactory": [
+      "0xab467b09a4ce8d57fd84c2d46ff4cf666d8c1638"
+    ],
+    "LabradoRouter02": [
+      "0x27b32d3bc668999e21d374c2aa9493d1dfeb6511"
+    ]
+  },
   "97": {
     "LabradoToken": [
       "0x244f8f230a48727e5d18fd25f8b3a04460304e85"
