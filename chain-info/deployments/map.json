@@ -26,6 +26,9 @@
     ],
     "LabradoRouter02": [
       "0x27b32d3bc668999e21d374c2aa9493d1dfeb6511"
+    ],
+    "WETH": [
+      "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c"
     ]
   },
   "97": {
